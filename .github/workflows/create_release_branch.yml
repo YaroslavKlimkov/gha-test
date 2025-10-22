@@ -29,19 +29,19 @@ jobs:
         git fetch --tags origin develop
         git checkout develop
         current_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*")
-        current_version=$(echo "$current_version" | cut -d '.' -f 1,2) # Use only yy.mm part of the version
         echo "Current version: $current_version"
-        echo "Current version (without minor): $new_version"
+        current_version=$(echo "$current_version" | cut -d '.' -f 1,2) # Use only yy.mm part of the version
+        echo "Current version (without minor): $current_version"
         echo "current_version=$current_version" >> $GITHUB_OUTPUT
-    # - name: Create tag and release branch
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     NEW_VERSION: ${{ steps.read_version.outputs.new_version }}
-    #   run: |
-    #     tag_name="$NEW_VERSION-c2c"
-    #     git fetch origin c2c-develop
-    #     git checkout c2c-develop
-    #     git tag $tag_name
-    #     git push origin $tag_name
-    #     git checkout -b release/$tag_name
-    #     git push origin release/$tag_name
+    - name: Create tag and release branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        current_version: ${{ steps.read_version.outputs.current_version }}
+      run: |
+        tag_name="$current_version-c2c"
+        git fetch origin c2c-develop
+        git checkout c2c-develop
+        git tag $tag_name
+        git push origin $tag_name
+        git checkout -b release/$tag_name
+        git push origin release/$tag_name
