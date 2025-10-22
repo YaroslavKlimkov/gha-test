@@ -38,10 +38,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         current_version: ${{ steps.read_version.outputs.current_version }}
       run: |
-        tag_name="$current_version-c2c"
-        git fetch origin c2c-develop
-        git checkout c2c-develop
-        git tag $tag_name
-        git push origin $tag_name
-        git checkout -b release/$tag_name
-        git push origin release/$tag_name
+        git fetch origin develop
+        git checkout develop
+        git checkout -b release/$current_version
+        git push origin release/$current_version
