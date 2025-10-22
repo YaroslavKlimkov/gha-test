@@ -52,6 +52,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         full_version: ${{ steps.read_version.outputs.full_version }}
       run: |
+        git fetch origin develop
         git checkout develop
         IFS='.' read -r yy mm patch <<< "$full_version"
         mm=$((mm + 1))
