@@ -22,6 +22,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Получаем имя текущей ветки
           CURRENT_BRANCH=${GITHUB_REF#refs/heads/}
+          git fetch --tags origin $CURRENT_BRANCH
           echo "Current branch: $CURRENT_BRANCH"
+          full_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*")
+          echo "Current full version: $full_version"

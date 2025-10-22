@@ -31,9 +31,6 @@ jobs:
         full_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*")
         echo "Full version: $full_version"
         echo "full_version=$full_version" >> $GITHUB_OUTPUT
-        short_version=$(echo "$full_version" | cut -d '.' -f 1,2) # Use only yy.mm part of the version
-        echo "Short version (without minor): $short_version"
-        echo "short_version=$short_version" >> $GITHUB_OUTPUT
     - name: Create release branch and move tag
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +39,11 @@ jobs:
       run: |
         git fetch origin main
         git checkout main
+        IFS='.' read -r yy mm patch <<< "$full_version"
+        short_version=${yy}.${mm}
+        echo "Short version (without minor): $short_version"
+        echo "short_version=$short_version" >> $GITHUB_OUTPUT
+
         git checkout -b release/$short_version
         git push origin release/$short_version
         git tag -f "$full_version"
@@ -54,7 +56,7 @@ jobs:
       run: |
         git fetch origin main
         git checkout main
-        IFS='.' read -r yy mm patch <<< "$full_version"
+        
         mm=$((mm + 1))
         if [ $mm -gt 12 ]; then
           mm=1
