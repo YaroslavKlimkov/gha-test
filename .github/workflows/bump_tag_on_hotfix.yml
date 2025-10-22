@@ -16,8 +16,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 1
       
+      - name: Fetch all tags
+        run: git fetch --tags origin
+
       - name: Bump tag version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
