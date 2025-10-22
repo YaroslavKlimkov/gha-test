@@ -3,7 +3,7 @@ name: C2C - Create Release Branch
 on:
   workflow_dispatch:
     branches:
-      - develop
+      - main
     inputs:
       confirm:
         description: 'Confirm creating of release branch'
@@ -26,8 +26,8 @@ jobs:
     - name: Read version from file
       id: read_version
       run: |
-        git fetch --tags origin develop
-        git checkout develop
+        git fetch --tags origin main
+        git checkout main
         full_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*")
         echo "Full version: $full_version"
         echo "full_version=$full_version" >> $GITHUB_OUTPUT
@@ -40,20 +40,20 @@ jobs:
         full_version: ${{ steps.read_version.outputs.full_version }}
         short_version: ${{ steps.read_version.outputs.short_version }}
       run: |
-        git fetch origin develop
-        git checkout develop
+        git fetch origin main
+        git checkout main
         git checkout -b release/$short_version
         git push origin release/$short_version
         git tag -f "$full_version"
         git push origin -f "$full_version"
 
-    - name: Create new version tag in develop
+    - name: Create new version tag in main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         full_version: ${{ steps.read_version.outputs.full_version }}
       run: |
-        git fetch origin develop
-        git checkout develop
+        git fetch origin main
+        git checkout main
         IFS='.' read -r yy mm patch <<< "$full_version"
         mm=$((mm + 1))
         if [ $mm -gt 12 ]; then
