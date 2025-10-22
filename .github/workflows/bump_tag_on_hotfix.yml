@@ -1,0 +1,27 @@
+name: Bump release tag on merge
+
+on:
+  push:
+    branches:
+      - 'release/*'     # Запуск при любом пуше (включая merge) в release-ветки
+
+permissions:
+  contents: write
+
+jobs:
+  bump-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
+      
+      - name: Bump tag version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Получаем имя текущей ветки
+          CURRENT_BRANCH=${GITHUB_REF#refs/heads/}
+          echo "Current branch: $CURRENT_BRANCH"
