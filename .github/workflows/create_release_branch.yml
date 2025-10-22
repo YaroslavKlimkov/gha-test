@@ -26,7 +26,7 @@ jobs:
       run: |
         git fetch --tags origin develop
         git checkout develop
-        current_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$')
+        current_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*")
         current_version=$(echo "$current_version" | cut -d '.' -f 1,2) # Use only yy.mm part of the version
         echo "Current version: $current_version"
         echo "Current version (without minor): $new_version"
