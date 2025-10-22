@@ -24,8 +24,8 @@ jobs:
     - name: Read version from file
       id: read_version
       run: |
-        git fetch origin c2c-develop
-        git checkout c2c-develop
+        git fetch origin develop
+        git checkout develop
         current_version=$(git describe --tags --abbrev=0 --match "v[0-9]*.[0-9]*.[0-9]*" | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$')
         current_version=$(echo "$current_version" | cut -d '.' -f 1,2) # Use only yy.mm part of the version
         echo "Current version: $current_version"
