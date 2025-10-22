@@ -23,10 +23,9 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Read version from file
+    - name: Get last version from tags
       id: read_version
       run: |
-        git fetch --tags origin main
         git checkout main
         full_version=$(git describe --tags --abbrev=0 --match "[0-9]*.[0-9]*.[0-9]*")
         echo "Full version: $full_version"
@@ -36,14 +35,15 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         full_version: ${{ steps.read_version.outputs.full_version }}
       run: |
-        git fetch origin main
         git checkout main
         IFS='.' read -r yy mm patch <<< "$full_version"
         short_version=${yy}.${mm}
         git checkout -b release/$short_version
         git push origin release/$short_version
-        git tag -f "$full_version"
-        git push origin -f "$full_version"
+        release_tag="release/$full_version"
+        echo "release_tag: $release_tag"
+        git tag "release/$release_tag"
+        git push origin "$release_tag"
 
     - name: Create new version tag in main
       env:
@@ -63,3 +63,4 @@ jobs:
         echo "new version: $new_version"
         git tag "$new_version"
         git push origin "$new_version"
+        git push origin --delete "$full_version"
